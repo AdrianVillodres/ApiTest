@@ -31,7 +31,8 @@ class MainActivity : ComponentActivity() {
         viewModel.getEmolga()*/
 
         val viewModel2 = PokemonViewModel2() // JSON
-        viewModel2.getEmolga(this)
+        viewModel2.getEmolga(this) // single item
+        viewModel2.getPokemons(this) // multiple items
 
         val viewModel3 = PokemonViewModel3() // Form
         enableEdgeToEdge()

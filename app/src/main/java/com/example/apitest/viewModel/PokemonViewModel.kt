@@ -40,6 +40,7 @@ class PokemonViewModel: ViewModel() {
 //For json
 class PokemonViewModel2: ViewModel() {
 
+    //single item
     fun getEmolga(context: Context) {
 
         try {
@@ -52,6 +53,24 @@ class PokemonViewModel2: ViewModel() {
         } catch (e: Exception) {
             Log.e("PokemonViewModel", "Error: ${e.message}")
         }
+    }
+
+    //varios items
+    fun getPokemons(context: Context){
+
+        try{
+
+            val pokemonList = JsonReader().getPokemonList(context)
+
+            for(pokemon in pokemonList){
+                Log.d("PokemonViewModel", "Name: ${pokemon.name}")
+                Log.d("PokemonViewModel", "Id: ${pokemon.id}")
+            }
+
+        }catch(e: Exception){
+            Log.e("PokemonViewModel", "Error: ${e.message}")
+        }
+
     }
 }
 

@@ -18,6 +18,7 @@ class retrofitBuilder {
 //para json(el json debe ir en app/src/main, buscar en el file explorer)
 class JsonReader {
 
+    //single
     fun getPokemon(context: Context): Pokemon {
         val jsonString = context.assets
             .open("Pokemon.json")
@@ -25,5 +26,20 @@ class JsonReader {
             .use { it.readText() }
 
         return Gson().fromJson(jsonString, Pokemon::class.java)
+    }
+
+    //varios items
+    fun getPokemonList(context: Context): List<Pokemon> {
+
+        val jsonString = context.assets
+            .open("Pokemon.json")
+            .bufferedReader()
+            .use { it.readText() }
+
+        val gson = Gson()
+
+        val pokemonArray = Array<Pokemon>::class.java
+
+        return gson.fromJson(jsonString, pokemonArray).toList()
     }
 }

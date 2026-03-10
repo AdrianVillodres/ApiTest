@@ -1,0 +1,20 @@
+[
+  {
+    "id": 25,
+    "name": "pikachu",
+    "weight": 60,
+    "height": 4
+  },
+  {
+    "id": 587,
+    "name": "emolga",
+    "weight": 50,
+    "height": 4
+  },
+  {
+    "id": 1,
+    "name": "bulbasaur",
+    "weight": 69,
+    "height": 7
+  }
+]
