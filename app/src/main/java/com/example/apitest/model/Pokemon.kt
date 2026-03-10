@@ -11,8 +11,8 @@ data class Pokemon(
     val weight: Int,
     @SerializedName ("height")
     val height: Int,
-    //@SerializedName ("species")
-    //val species: List<Specie>
+    /*@SerializedName ("species")
+    val species: List<Specie>*/
 )
 /*
 data class Specie(
