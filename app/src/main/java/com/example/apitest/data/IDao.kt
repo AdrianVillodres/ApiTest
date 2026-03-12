@@ -24,4 +24,8 @@ interface IDao{
 
     @Query("DELETE FROM items WHERE name = 'bulbasaur'")
     suspend fun deleteCompleted()
+
+    @Query("DELETE FROM items")
+    suspend fun deleteAllItems()
+
 }

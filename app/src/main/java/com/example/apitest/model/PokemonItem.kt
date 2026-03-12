@@ -18,9 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.apitest.data.PokemonEntity
 
 @Composable
-fun PokemonItem(item: Pokemon, onItemClick: (Pokemon) -> Unit) {
+fun PokemonItem(item: PokemonEntity, onItemClick: (PokemonEntity) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

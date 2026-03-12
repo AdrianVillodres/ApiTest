@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.apitest.data.PokemonEntity
 import com.example.apitest.model.Pokemon
+import com.example.apitest.model.PokemonItem
 import com.example.apitest.viewModel.BDViewModel
 import com.example.apitest.viewModel.PokemonViewModel3
 import kotlinx.coroutines.flow.StateFlow
@@ -26,12 +27,12 @@ import kotlinx.serialization.json.Json
 
 
 @Composable
-fun Screen(viewModel: PokemonViewModel3, bdViewModel: BDViewModel, onNavegarAlDetall: (Pokemon) -> Unit){
+fun Screen(viewModel: PokemonViewModel3, ){
     var name by remember { mutableStateOf("") }
     var id by remember { mutableStateOf("") }
     var weight by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
-    val items by bdViewModel.items.collectAsState()
+
 
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -70,11 +71,7 @@ fun Screen(viewModel: PokemonViewModel3, bdViewModel: BDViewModel, onNavegarAlDe
             Text("Guardar Pokemon")
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize()){
-            items(items){ item ->
-                Text(item.name)
-            }
-        }
+
 
 
 

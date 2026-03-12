@@ -11,10 +11,13 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,8 +33,12 @@ import com.example.apitest.viewModel.PokemonViewModel2
 import com.example.apitest.viewModel.PokemonViewModel3
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.apitest.data.SettingsRepository
 import com.example.apitest.navigation.NavigationItem
 import com.example.apitest.navigation.NavigationWrapper
+import com.example.apitest.viewModel.SearchBarViewModel
+import com.example.apitest.viewModel.SettingsViewModel
+import com.example.apitest.viewModel.SettingsViewModelFactory
 
 
 class MainActivity : ComponentActivity() {
@@ -44,15 +51,29 @@ class MainActivity : ComponentActivity() {
         viewModel2.getEmolga(this) // single item
         viewModel2.getPokemons(this) // multiple items
 
-
-
         enableEdgeToEdge()
         setContent {
             val bdViewModel: BDViewModel = viewModel(
                 factory = BDViewModelFactory(database.funDAO())
             )
             val viewModel3 = remember {PokemonViewModel3(bdViewModel)} // Form
-            MyApp(bdViewModel, viewModel3)
+            val settingsRepository = remember { SettingsRepository(this) }
+            val searchBarViewModel = remember { SearchBarViewModel(bdViewModel) }
+
+            val settingsViewModel: SettingsViewModel =
+                viewModel(
+                    factory = SettingsViewModelFactory(settingsRepository)
+                )
+            val darkTheme = settingsViewModel.darkMode
+
+            MaterialTheme(
+                colorScheme = if (darkTheme)
+                    darkColorScheme()
+                else
+                    lightColorScheme()
+            ) {
+                MyApp(searchBarViewModel, bdViewModel, viewModel3, settingsViewModel)
+            }
         }
     }
 }
@@ -74,7 +95,7 @@ fun GreetingPreview() {
 }
 
 @Composable
-fun MyApp(bdViewModel: BDViewModel, viewModel3: PokemonViewModel3){
+fun MyApp(searchBarViewModel: SearchBarViewModel, bdViewModel: BDViewModel, viewModel3: PokemonViewModel3, settingsViewModel: SettingsViewModel){
 
     // Estat per saber quin ítem està seleccionat (0, 1 o 2)
     var selectedItem by remember { mutableIntStateOf(0) }
@@ -115,7 +136,7 @@ fun MyApp(bdViewModel: BDViewModel, viewModel3: PokemonViewModel3){
         // Important: Passem el padding al contingut perquè la barra no tapi la pantalla
         Box(modifier = Modifier.padding(innerPadding)) {
             // Carreguem el NavigationWrapper passant-li el controlador
-            NavigationWrapper(navController, bdViewModel, viewModel3)
+            NavigationWrapper(navController, searchBarViewModel, bdViewModel, viewModel3, settingsViewModel)
         }
     }
 }

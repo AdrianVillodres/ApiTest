@@ -29,4 +29,8 @@ class BDViewModel(private val dao: IDao) : ViewModel() {
     fun deleteItem(item: PokemonEntity) = viewModelScope.launch {
         dao.deleteItem(item)
     }
+
+    fun clearDatabase() = viewModelScope.launch {
+        dao.deleteAllItems()
+    }
 }

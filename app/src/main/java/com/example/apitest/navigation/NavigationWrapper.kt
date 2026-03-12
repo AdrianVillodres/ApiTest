@@ -12,12 +12,16 @@ import com.example.apitest.ui.screens.Screen2
 import com.example.apitest.ui.screens.Screen3
 import com.example.apitest.viewModel.BDViewModel
 import com.example.apitest.viewModel.PokemonViewModel3
+import com.example.apitest.viewModel.SearchBarViewModel
+import com.example.apitest.viewModel.SettingsViewModel
 
 @Composable
 fun NavigationWrapper(
     navController: NavHostController,
+    searchBarViewModel: SearchBarViewModel,
     bdViewModel: BDViewModel,
-    viewModel3: PokemonViewModel3
+    viewModel3: PokemonViewModel3,
+    settingsViewModel: SettingsViewModel
 ) {
 
     NavHost(
@@ -28,8 +32,16 @@ fun NavigationWrapper(
         // Pantalla1
         composable("screen") {
             Screen(
+                viewModel = viewModel3
+            )
+        }
+
+        // Pantalla2
+        composable("screen2") {
+            Screen2(
+                viewModel = searchBarViewModel,
                 bdViewModel = bdViewModel,
-                viewModel = viewModel3,
+                settingsViewModel = settingsViewModel,
                 onNavegarAlDetall = { pokemon ->
                     navController.navigate(
                         "detail/${pokemon.name}/${pokemon.height}/${pokemon.weight}"
@@ -38,14 +50,9 @@ fun NavigationWrapper(
             )
         }
 
-        // Pantalla2
-        composable("screen2") {
-            Screen2()
-        }
-
         // Pantalla3
         composable("screen3") {
-            Screen3()
+            Screen3(settingsViewModel, bdViewModel)
         }
 
         // Detalle
