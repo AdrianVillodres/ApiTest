@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp") version "2.0.21-1.0.25"
+
 }
 
 android {
@@ -51,6 +53,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.room.common.jvm)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.navigation.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -61,4 +67,18 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    //BBDD
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+
+    //navegació
+    // Navegació
+    implementation("androidx.navigation:navigation-compose:2.8.0")
+    // Serialització JSON
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    // Icones esteses
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 }

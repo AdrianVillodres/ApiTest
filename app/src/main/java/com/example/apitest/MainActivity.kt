@@ -4,48 +4,55 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.apitest.model.Pokemon
+import com.example.apitest.data.BaseDeDades
 import com.example.apitest.ui.theme.ApiTestTheme
-import com.example.apitest.viewModel.PokemonViewModel
+import com.example.apitest.viewModel.BDViewModel
+import com.example.apitest.viewModel.BDViewModelFactory
 import com.example.apitest.viewModel.PokemonViewModel2
 import com.example.apitest.viewModel.PokemonViewModel3
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.example.apitest.navigation.NavigationItem
+import com.example.apitest.navigation.NavigationWrapper
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /*val viewModel = PokemonViewModel() // API
         viewModel.getEmolga()*/
-
+        val database = BaseDeDades.getDatabase(this)
         val viewModel2 = PokemonViewModel2() // JSON
         viewModel2.getEmolga(this) // single item
         viewModel2.getPokemons(this) // multiple items
 
-        val viewModel3 = PokemonViewModel3() // Form
+
+
         enableEdgeToEdge()
         setContent {
-            ApiTestTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                    PokemonForm(viewModel3)
-                }
-            }
+            val bdViewModel: BDViewModel = viewModel(
+                factory = BDViewModelFactory(database.funDAO())
+            )
+            val viewModel3 = remember {PokemonViewModel3(bdViewModel)} // Form
+            MyApp(bdViewModel, viewModel3)
         }
     }
 }
@@ -66,56 +73,49 @@ fun GreetingPreview() {
     }
 }
 
-//For formulario
 @Composable
-fun PokemonForm(viewModel: PokemonViewModel3) {
+fun MyApp(bdViewModel: BDViewModel, viewModel3: PokemonViewModel3){
 
-    var name by remember { mutableStateOf("") }
-    var id by remember { mutableStateOf("") }
-    var weight by remember { mutableStateOf("") }
-    var height by remember { mutableStateOf("") }
+    // Estat per saber quin ítem està seleccionat (0, 1 o 2)
+    var selectedItem by remember { mutableIntStateOf(0) }
 
-    Column {
+    // Creem el navController aquí, al nivell superior
+    val navController = rememberNavController()
 
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Nombre") }
-        )
+    // Llista d'opcions del menú
+    val items = listOf(
+        NavigationItem("Inici", Icons.Default.Home, "screen", 0),
+        NavigationItem("Perfil", Icons.Default.Person, "screen2", 1),
+        NavigationItem("Ajustos", Icons.Default.Settings, "screen3", 2)
+    )
 
-        TextField(
-            value = id,
-            onValueChange = { id = it },
-            label = { Text("ID") }
-        )
-
-        TextField(
-            value = weight,
-            onValueChange = { weight = it },
-            label = { Text("Peso") }
-        )
-
-        TextField(
-            value = height,
-            onValueChange = { height = it },
-            label = { Text("Altura") }
-        )
-
-        Button(
-            onClick = {
-
-                val pokemon = Pokemon(
-                    id = id.toIntOrNull() ?: 0,
-                    name = name,
-                    weight = weight.toIntOrNull() ?: 0,
-                    height = height.toIntOrNull() ?: 0
-                )
-
-                viewModel.savePokemon(pokemon)
-
+    // Scaffold que conté la BottomBar
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                items.forEachIndexed { index, item -> // Bucle per crear cada ítem
+                    NavigationBarItem(
+                        selected = item.index == selectedItem, // Marquem si està seleccionat
+                        label = { Text(item.label) },
+                        icon = {
+                            Icon(imageVector = item.icon, contentDescription = item.label)
+                        },
+                        onClick = {
+                            selectedItem = index // Actualitzem l'estat visual
+                            navController.navigate(item.route) { // Naveguem a la ruta
+                                // Opcional: Evitar múltiples còpies de la mateixa pantalla a la pila
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
             }
-        ) {
-            Text("Guardar Pokemon")
+        }
+    ) { innerPadding ->
+        // Important: Passem el padding al contingut perquè la barra no tapi la pantalla
+        Box(modifier = Modifier.padding(innerPadding)) {
+            // Carreguem el NavigationWrapper passant-li el controlador
+            NavigationWrapper(navController, bdViewModel, viewModel3)
         }
     }
 }

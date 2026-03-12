@@ -14,6 +14,7 @@ class PokemonViewModel: ViewModel() {
     private val retrofit = retrofitBuilder().build()
     private val pokeApi = retrofit.create(PokeAPIClient::class.java)
 
+
     fun getEmolga(){
         viewModelScope.launch {
             try{
@@ -75,12 +76,15 @@ class PokemonViewModel2: ViewModel() {
 }
 
 //For formulario
-class PokemonViewModel3: ViewModel() {
+class PokemonViewModel3(bdviewmodel : BDViewModel): ViewModel() {
+    private var lista = mutableListOf<Pokemon>()
 
+    private val bdviewmodel = bdviewmodel
     fun savePokemon(pokemon: Pokemon){
         Log.d("PokemonViewModel", "Pokemon name: ${pokemon.name}")
         Log.d("PokemonViewModel", "Pokemon id: ${pokemon.id}")
         Log.d("PokemonViewModel", "Pokemon weight: ${pokemon.weight}")
         Log.d("PokemonViewModel", "Pokemon height: ${pokemon.height}")
+        bdviewmodel.addItem(pokemon)
     }
 }
